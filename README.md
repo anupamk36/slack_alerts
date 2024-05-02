@@ -6,8 +6,6 @@ This repository contains code for integrating Slack alerts into your application
 - [Introduction](#introduction)
 - [Setup](#setup)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 
@@ -29,17 +27,19 @@ Once you have set up the integration, you can start using this utility in your a
 
 ```python
 # Example Python code to send a message to Slack
-import requests
+from slack_utils import SlackUtils
 
-def send_slack_alert(webhook_url, message):
-    payload = {'text': message}
-    response = requests.post(webhook_url, json=payload)
-    if response.status_code == 200:
-        print("Alert sent successfully!")
-    else:
-        print("Failed to send alert. Status code:", response.status_code)
+# Initialize SlackUtils with your Slack webhook URL and channel
+slack = SlackUtils(slack_webhook_url='your-slack-webhook-url', channel='your-channel')
 
-# Replace 'webhook_url' with your actual webhook URL
-webhook_url = 'https://hooks.slack.com/services/your/webhook/url'
-message = 'This is a test alert from my application.'
-send_slack_alert(webhook_url, message)
+try:
+    # Your code here...
+    slack.send_info_message("This is an informational message.")
+except Warning as w:
+    # If a warning occurs, send a warning message to Slack
+    warning_message = str(w)
+    slack.send_warning_message(warning_message)
+except Exception as e:
+    # If an exception occurs, send an error message to Slack
+    error_message = str(e)
+    slack.send_error_message(error_message)
